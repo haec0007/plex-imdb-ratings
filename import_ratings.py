@@ -19,11 +19,11 @@ plex_token = CONFIG['plex']['token']
 lib_name = CONFIG['plex']['library']
 plex_server = PlexServer(plex_ip, plex_token)
 
-movies = plex_server.library.section(lib_name)
+plex_lib = plex_server.library.section(lib_name)
 
 
 def rate(imdb_id, rating):
-    video = movies.getGuid(f'imdb://{imdb_id}')
+    video = plex_lib.getGuid(f'imdb://{imdb_id}')
     movie_title = video.title
     video.rate(rating)
     half_rating = rating / 2
