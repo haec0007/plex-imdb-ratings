@@ -1,0 +1,7 @@
+plex_ip: http://192.168.0.0:32400
+plex_token: <your_plex_token_here>
+imdb_user_nbr: 12345678
+
+browser_options:
+  user_data_dir: C:\\Users\\<User>\\AppData\\Local\\Microsoft\\Edge\\User Data
+  profile_dir: Default
