@@ -14,11 +14,12 @@ CONFIG = read_config(args.config)
 
 ratings_file = 'ratings.csv'
 log_file = 'last_run.log'
-plex_ip = CONFIG['plex_ip']
-plex_token = CONFIG['plex_token']
+plex_ip = CONFIG['plex']['ip']
+plex_token = CONFIG['plex']['token']
+lib_name = CONFIG['plex']['library']
 plex_server = PlexServer(plex_ip, plex_token)
 
-movies = plex_server.library.section('Movies')
+movies = plex_server.library.section(lib_name)
 
 
 def rate(imdb_id, rating):
