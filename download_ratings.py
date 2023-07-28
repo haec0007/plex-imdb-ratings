@@ -30,7 +30,7 @@ if __name__ == '__main__':
 
     user_data_dir = CONFIG['browser_options']['user_data_dir']
     profile_dir = CONFIG['browser_options']['profile_dir']
-    imdb_ratings_url = f"https://www.imdb.com/user/ur{CONFIG['imdb_user_nbr']}/ratings/export"
+    imdb_ratings_page = 'https://www.imdb.com/list/ratings?ref_=nv_usr_rt_4'
     this_dir = pathlib.Path(__file__).parent.resolve()
 
     user_agent = UserAgent().edge
@@ -51,5 +51,11 @@ if __name__ == '__main__':
 
     driver_path = '...'
     driver = webdriver.Edge(options=options, service=Service(driver_path))
-    driver.get(imdb_ratings_url)
+    driver.get(imdb_ratings_page)
+
+    url = driver.current_url
+    imdb_user_nbr = url.split('https://www.imdb.com/user/ur', 1)[1][:8]
+    imdb_ratings_download = f"https://www.imdb.com/user/ur{imdb_user_nbr}/ratings/export"
+
+    driver.get(imdb_ratings_download)
     wait_for_download('ratings.csv')
