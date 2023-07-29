@@ -10,14 +10,22 @@ from selenium.webdriver.chrome.service import Service
 from read_config import read_config
 
 
+def get_modified_time(filename):
+    try:
+        return os.path.getmtime(filename)
+    except FileNotFoundError:
+        return 0
+
+
 def wait_for_download(filename, timeout=30):
     end_time = time.time() + timeout
-    last_modified = os.path.getmtime(filename)
-    while os.path.getmtime(filename) <= last_modified:
+    last_modified = get_modified_time(filename)
+
+    while get_modified_time(filename) <= last_modified:
         time.sleep(1)
         if time.time() > end_time:
             raise Exception("File not downloaded in time.")
-    if os.path.getmtime(filename) > last_modified:
+    if get_modified_time(filename) > last_modified:
         print(f"File saved to {os.path.abspath(filename)}")
         return True
 
