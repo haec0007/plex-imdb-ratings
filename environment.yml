@@ -1,6 +1,7 @@
 name: plex-imdb-ratings
 
 dependencies:
+    - pip=23.2
     - python=3.10
     - pip:
         - fake-useragent==1.1.3
