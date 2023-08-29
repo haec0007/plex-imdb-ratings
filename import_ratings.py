@@ -1,6 +1,7 @@
 import argparse
 import csv
 import datetime
+import os
 
 import plexapi.exceptions
 from plexapi.server import PlexServer
@@ -33,8 +34,9 @@ def rate(imdb_id, rating):
 
 
 def log_date():
+    ratings_date = datetime.datetime.fromtimestamp(os.path.getmtime('ratings.csv')).date()
     f = open(log_file, 'w')
-    f.write(str(datetime.datetime.now().date()))
+    f.write(str(ratings_date))
     f.close()
 
 
