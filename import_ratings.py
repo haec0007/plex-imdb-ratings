@@ -52,6 +52,9 @@ def import_ratings():
     last_run_dt = last_run()
     last_run_dt = datetime.datetime.strptime(last_run_dt, '%Y-%m-%d')
 
+    recently_added = plex_lib.search(filters={"addedAt>>=": last_run_dt})
+    recently_added = [g.id[g.id.find('://') + 3:] for x in recently_added for g in x.guids if g.id[:4] == 'imdb']
+
     with open(ratings_file, "r") as csv_file:
         reader = csv.reader(csv_file)
         next(reader)  # Skip the first row (the header row)
@@ -63,7 +66,7 @@ def import_ratings():
             rating = int(row[1])
             imdb_id = row[0]
 
-            if date_rated >= last_run_dt:
+            if (date_rated >= last_run_dt) or (imdb_id in recently_added):
                 # Select movie in Plex library by IMDb id
                 try:
                     rate(imdb_id, rating)
