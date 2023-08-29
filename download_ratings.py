@@ -1,33 +1,11 @@
 import argparse
 import os
 import pathlib
-import time
 
-from fake_useragent import UserAgent
-from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
+from playwright.sync_api import sync_playwright
+from playwright._impl._api_types import Error as PlaywrightAPIError
 
 from read_config import read_config
-
-
-def get_modified_time(filename):
-    try:
-        return os.path.getmtime(filename)
-    except FileNotFoundError:
-        return 0
-
-
-def wait_for_download(filename, timeout=30):
-    end_time = time.time() + timeout
-    last_modified = get_modified_time(filename)
-
-    while get_modified_time(filename) <= last_modified:
-        time.sleep(1)
-        if time.time() > end_time:
-            raise Exception("File not downloaded in time.")
-    if get_modified_time(filename) > last_modified:
-        print(f"File saved to {os.path.abspath(filename)}")
-        return True
 
 
 if __name__ == '__main__':
@@ -41,29 +19,20 @@ if __name__ == '__main__':
     imdb_ratings_page = 'https://www.imdb.com/list/ratings?ref_=nv_usr_rt_4'
     this_dir = pathlib.Path(__file__).parent.resolve()
 
-    user_agent = UserAgent().edge
-    options = webdriver.EdgeOptions()
-    options.add_argument(f"--user-agent={user_agent}")
-    options.add_argument(f"user-data-dir={user_data_dir}")
-    options.add_argument(f"profile-directory={profile_dir}")
-    options.add_argument("--headless")
-    options.add_experimental_option('excludeSwitches', ['enable-logging'])  # Silence DevTools messages
-
-    prefs = {
-        "profile.default_content_settings.popups": 0,
-        "download.default_directory": str(this_dir),
-        "download.prompt_for_download": False,
-        "download.directory_upgrade": True
-    }
-    options.add_experimental_option("prefs", prefs)
-
-    driver_path = '...'
-    driver = webdriver.Edge(options=options, service=Service(driver_path))
-    driver.get(imdb_ratings_page)
-
-    url = driver.current_url
-    imdb_user_nbr = url.split('https://www.imdb.com/user/ur', 1)[1][:8]
-    imdb_ratings_download = f"https://www.imdb.com/user/ur{imdb_user_nbr}/ratings/export"
-
-    driver.get(imdb_ratings_download)
-    wait_for_download('ratings.csv')
+    with sync_playwright() as p:
+        chromium = p.chromium
+        browser = chromium.launch_persistent_context(user_data_dir, headless=True)
+        api_request_context = browser.request
+        page = browser.new_page()
+        page.goto(imdb_ratings_page)
+        url = page.url
+        imdb_user_nbr = url.split('https://www.imdb.com/user/ur', 1)[1][:8]
+        imdb_ratings_download = f"https://www.imdb.com/user/ur{imdb_user_nbr}/ratings/export"
+        with page.expect_download() as download_info:
+            try:
+                page.goto(imdb_ratings_download)
+            except PlaywrightAPIError:
+                pass
+        download = download_info.value
+        download.save_as(os.path.join(this_dir, 'ratings.csv'))
+        browser.close()
