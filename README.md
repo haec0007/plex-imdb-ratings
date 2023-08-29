@@ -1,11 +1,18 @@
 # plex-imdb-ratings
 Python scripts for downloading your IMDb user ratings and importing them into Plex.
 ## Installation and Setup
-Clone or download this project to a location on your computer.
+Clone or download this project to a location on your computer. You can install the required packages either with pip...
+```commandline
+pip install -r requirements.txt
+```
+...or by creating a conda environment.
+```commandline
+conda env create -f environment.yml
+```
 
-Microsoft Edge must be installed. This project downloads your IMDb ratings using a Selenium Edge web driver.
+After installing playwright, you must run `playwright install` to install the required browsers.
 
-Make sure you are logged in to IMDb.com on Edge under the profile specified in your configuration file. IMDb has measures that prevent the use of automated methods to login, so we must load a user profile that is already logged in to the site.
+A Chromium-based web browser (Google Chrome or Microsoft Edge) must be installed on your computer. Make sure you are logged in to IMDb.com on Chrome or Edge under the profile specified in your configuration file. IMDb has measures that prevent the use of automated methods to login, so we must load a user profile that is already logged in to the site.
 ## Usage
 ```
 python download_ratings.py <config_file>
