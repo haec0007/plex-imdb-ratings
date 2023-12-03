@@ -3,7 +3,7 @@ import os
 import pathlib
 
 from playwright.sync_api import sync_playwright
-from playwright._impl._api_types import Error as PlaywrightAPIError
+from playwright._impl._errors import Error as PlaywrightAPIError
 
 from read_config import read_config
 
