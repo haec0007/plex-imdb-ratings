@@ -55,6 +55,8 @@ if __name__ == '__main__':
         except Exception:
             traceback.print_exc()
             exit_code = 1
+        else:
+            print("Downloaded ratings file.")
         finally:
             cleanup(browser, page)
             sys.exit(exit_code)
