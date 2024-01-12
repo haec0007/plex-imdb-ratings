@@ -30,3 +30,5 @@ This is a YAML file that contains user-specific parameters needed to run the dow
   - **profile_dir:** The Microsoft Edge profile you are running under.
 
 `example_config.yml` contains an example of what a configuration should look like.
+## Troubleshooting
+If your ratings file fails to save, double check that you are signed into IMDb.com in your chosen browser, and make sure that there are no instances of your browser currently running. This includes background processes. On Windows, you can press Ctrl + Shift + Esc to see if any hidden browser instances are running and kill them.
