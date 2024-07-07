@@ -25,8 +25,14 @@ plex_lib = plex_server.library.section(lib_name)
 
 def rate(imdb_id, rating):
     video = plex_lib.getGuid(f'imdb://{imdb_id}')
+
+    # Search for other items in the Plex library with the same guid.
+    # This ensures all editions of a movie get rated.
+    search_results = plex_lib.search(guid=video.guid)
+    for v in search_results:
+        v.rate(rating)
+
     movie_title = video.title
-    video.rate(rating)
     half_rating = rating / 2
     if half_rating == int(half_rating):
         half_rating = int(half_rating)
