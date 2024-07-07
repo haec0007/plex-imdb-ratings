@@ -23,14 +23,14 @@ plex_server = PlexServer(plex_ip, plex_token)
 plex_lib = plex_server.library.section(lib_name)
 
 
-def rate(imdb_id, rating):
+def rate(imdb_id, imdb_year, rating):
     video = plex_lib.getGuid(f'imdb://{imdb_id}')
     movie_title = video.title
     video.rate(rating)
     half_rating = rating / 2
     if half_rating == int(half_rating):
         half_rating = int(half_rating)
-    print(f'"{movie_title}": {half_rating}/5')
+    print(f'{movie_title} ({imdb_year}) | {half_rating}/5')
 
 
 def log_date():
@@ -67,13 +67,17 @@ def import_ratings():
             date_rated = datetime.datetime.strptime(row[2], '%Y-%m-%d')
             rating = int(row[1])
             imdb_id = row[0]
+            imdb_title = row[3]
+            imdb_url = row[5]
+            imdb_year = row[9]
 
             if (date_rated >= last_run_dt) or (imdb_id in recently_added):
                 # Select movie in Plex library by IMDb id
                 try:
-                    rate(imdb_id, rating)
+                    rate(imdb_id, imdb_year, rating)
                 except plexapi.exceptions.NotFound:
                     # The movie is not in the Plex library.
+                    print(f'{imdb_title} ({imdb_year}) | {rating}/10 | {imdb_url}')
                     pass
 
 
