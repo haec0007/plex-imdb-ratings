@@ -1,5 +1,7 @@
 # plex-imdb-ratings
 Python scripts for downloading your IMDb user ratings and importing them into Plex.
+# DOWNLOADING RATINGS FROM IMDb.com IS CURRENTLY BROKEN
+IMDb changed how ratings get exported, and the `download_ratings.py` script no longer works to export a user's ratings. The `import_ratings.py` script still functions as intended if you manually export your ratings and save them as `ratings.csv`.
 ## Installation and Setup
 Clone or download this project to a location on your computer. You can install the required packages either with pip...
 ```commandline
